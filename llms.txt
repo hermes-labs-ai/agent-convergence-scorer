@@ -1,0 +1,63 @@
+# agent-convergence-scorer
+
+> Measure how similar N agent outputs are. Four metrics over a list of N strings: exact-match rate, Jaccard token overlap, divergence point, and a composite 0-1 convergence score. Python 3.9+, stdlib-only, CLI and library.
+
+## One-line summary
+Takes N agent runs (strings), returns 4 numbers telling you how much they agreed — lexical, not semantic.
+
+## Install
+```
+pip install agent-convergence-scorer
+```
+
+## Usage (library)
+```python
+from agent_convergence_scorer import score_runs
+score_runs(["run 1", "run 2", "run 3"])
+```
+
+## Usage (CLI)
+```
+echo '{"runs": ["a", "b"]}' | agent-convergence-scorer -
+agent-convergence-scorer input.json
+```
+
+## Output shape
+- num_runs: int
+- exact_match_rate: float [0, 1]
+- token_metrics.avg_overlap: float [0, 1]  (mean pairwise Jaccard over whitespace tokens)
+- token_metrics.jaccard: float [0, 1]      (first two runs only)
+- divergence_point.num_tokens_to_divergence: int
+- divergence_point.diverges_at_token: str | null
+- convergence_score: float [0, 1]  (composite: 0.5*exact + 0.3*avg_overlap + 0.2*div_distance_norm)
+
+## When to use
+- CI gate for prompt-rerun consistency
+- Multi-agent fan-out collapse detection
+- Temperature / framing / prompt A/B reproducibility measurement
+- Multi-agent hackathon diversity quantification
+
+## When not to use
+- Semantic similarity (use embeddings/rerankers)
+- Subword or BPE comparison (whitespace tokenization only)
+- Non-whitespace-segmented languages (tokenize upstream)
+- Ranking quality (use ir-measures/ranx)
+- Streaming/incremental scoring (batch only)
+
+## Dependencies
+None at runtime. Dev: pytest, ruff.
+
+## License
+MIT
+
+## Trust
+Sealed with hermes-seal v1. SBOM at sbom.cdx.json (CycloneDX 1.5).
+
+## Home
+https://github.com/roli-lpci/agent-convergence-scorer
+
+## Author
+Rolando Bosch / Hermes Labs (hermes-labs.ai)
+
+## Origin
+Extracted 2026-04-22 from the Hermes Labs Cascade Hackathon — a controlled experiment measuring whether prompt framing reduces ideation collapse in N-agent fan-outs.

@@ -1,0 +1,17 @@
+$ echo '{"runs": ["The capital is Paris.", "The capital is Paris.", "The capital is Lyon."]}' \
+  | agent-convergence-scorer -
+
+{
+  "num_runs": 3,
+  "exact_match_rate": 0.667,
+  "token_metrics": {
+    "avg_overlap": 0.733,
+    "jaccard": 1.0
+  },
+  "convergence_score": 0.703,
+  "divergence_point": {
+    "diverges_at_token": "paris.",
+    "token_position": 3,
+    "num_tokens_to_divergence": 3
+  }
+}

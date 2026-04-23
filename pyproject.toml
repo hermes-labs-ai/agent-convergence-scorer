@@ -1,0 +1,102 @@
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "agent-convergence-scorer"
+version = "0.1.0"
+description = "Score how similar N agent outputs are — exact match, Jaccard token overlap, divergence point, composite 0-1 score. Stdlib-only."
+readme = "README.md"
+license = { text = "MIT" }
+requires-python = ">=3.9"
+authors = [
+    { name = "Rolando Bosch", email = "rbosch@lpci.ai" },
+]
+maintainers = [
+    { name = "Hermes Labs", email = "rbosch@lpci.ai" },
+]
+keywords = [
+    "agents",
+    "multi-agent",
+    "llm",
+    "evaluation",
+    "reproducibility",
+    "convergence",
+    "diversity",
+    "jaccard",
+    "stochasticity",
+    "ai-evaluation",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Quality Assurance",
+    "Topic :: Software Development :: Testing",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "ruff>=0.5",
+]
+
+[project.scripts]
+agent-convergence-scorer = "agent_convergence_scorer.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/roli-lpci/agent-convergence-scorer"
+Repository = "https://github.com/roli-lpci/agent-convergence-scorer"
+Issues = "https://github.com/roli-lpci/agent-convergence-scorer/issues"
+Changelog = "https://github.com/roli-lpci/agent-convergence-scorer/blob/main/CHANGELOG.md"
+"Hermes Labs" = "https://hermes-labs.ai"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agent_convergence_scorer"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "src/",
+    "tests/",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md",
+    "pyproject.toml",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "RUF",  # ruff-specific
+]
+ignore = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]
