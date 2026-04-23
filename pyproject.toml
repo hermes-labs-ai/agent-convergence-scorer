@@ -31,7 +31,6 @@ classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.9",
@@ -57,10 +56,10 @@ dev = [
 agent-convergence-scorer = "agent_convergence_scorer.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/roli-lpci/agent-convergence-scorer"
-Repository = "https://github.com/roli-lpci/agent-convergence-scorer"
-Issues = "https://github.com/roli-lpci/agent-convergence-scorer/issues"
-Changelog = "https://github.com/roli-lpci/agent-convergence-scorer/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/hermes-labs-ai/agent-convergence-scorer"
+Repository = "https://github.com/hermes-labs-ai/agent-convergence-scorer"
+Issues = "https://github.com/hermes-labs-ai/agent-convergence-scorer/issues"
+Changelog = "https://github.com/hermes-labs-ai/agent-convergence-scorer/blob/main/CHANGELOG.md"
 "Hermes Labs" = "https://hermes-labs.ai"
 
 [tool.hatch.build.targets.wheel]

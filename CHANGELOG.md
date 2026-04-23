@@ -26,4 +26,4 @@ Cascade Hackathon (2026-04-22), a controlled experiment measuring whether
 prompt framing affects ideation convergence across N concurrent agents.
 The scorer provided the method by which that experiment measured collapse.
 
-[0.1.0]: https://github.com/roli-lpci/agent-convergence-scorer/releases/tag/v0.1.0
+[0.1.0]: https://github.com/hermes-labs-ai/agent-convergence-scorer/releases/tag/v0.1.0

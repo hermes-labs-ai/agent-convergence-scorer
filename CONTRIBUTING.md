@@ -18,7 +18,7 @@ If you're not sure, open an issue before writing code.
 ## Development setup
 
 ```bash
-git clone https://github.com/roli-lpci/agent-convergence-scorer
+git clone https://github.com/hermes-labs-ai/agent-convergence-scorer
 cd agent-convergence-scorer
 python -m venv .venv
 source .venv/bin/activate        # or .venv\Scripts\activate on Windows

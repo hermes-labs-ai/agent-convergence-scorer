@@ -134,9 +134,9 @@ Extracted from a prototype built during the Hermes Labs Cascade Hackathon on 202
 [Hermes Labs](https://hermes-labs.ai) builds AI audit infrastructure for enterprise AI systems — EU AI Act, ISO 42001, agent-level risk. We open-source the tools we use internally. Everything is MIT, fully free, no SaaS tier. Audit work is paid; the code is not.
 
 Companion OSS to consider pairing with this scorer:
-- **[lintlang](https://github.com/roli-lpci/lintlang)** — static linter for agent configs
-- **[hermes-jailbench](https://github.com/roli-lpci/hermes-jailbench)** — jailbreak regression benchmark
-- **[little-canary](https://github.com/roli-lpci/little-canary)** — prompt-injection detection
-- **[claude-router](https://github.com/roli-lpci/claude-router)** — model-tier + scaffold router
+- **[lintlang](https://github.com/hermes-labs-ai/lintlang)** — static linter for agent configs
+- **[hermes-jailbench](https://github.com/hermes-labs-ai/hermes-jailbench)** — jailbreak regression benchmark
+- **[little-canary](https://github.com/hermes-labs-ai/little-canary)** — prompt-injection detection
+- **[claude-router](https://github.com/hermes-labs-ai/claude-router)** — model-tier + scaffold router
 
 Full stack listed in the repo README.

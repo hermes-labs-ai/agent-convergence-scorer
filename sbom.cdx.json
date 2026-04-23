@@ -33,11 +33,11 @@
         },
         {
           "type": "vcs",
-          "url": "https://github.com/roli-lpci/agent-convergence-scorer"
+          "url": "https://github.com/hermes-labs-ai/agent-convergence-scorer"
         },
         {
           "type": "issue-tracker",
-          "url": "https://github.com/roli-lpci/agent-convergence-scorer/issues"
+          "url": "https://github.com/hermes-labs-ai/agent-convergence-scorer/issues"
         }
       ],
       "authors": [

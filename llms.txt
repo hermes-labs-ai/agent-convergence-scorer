@@ -54,7 +54,7 @@ MIT
 Staged hermes-seal v1 manifest at .hermes-seal.yaml. SBOM at sbom.cdx.json (CycloneDX 1.5). Zero runtime deps.
 
 ## Home
-https://github.com/roli-lpci/agent-convergence-scorer
+https://github.com/hermes-labs-ai/agent-convergence-scorer
 
 ## Author
 Rolando Bosch / Hermes Labs (hermes-labs.ai)

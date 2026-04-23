@@ -8,7 +8,7 @@
 # Pre-grant: `hermes-seal verify` exits 1 (expected).
 # Post-grant: `hermes-seal verify` exits 0.
 seal_version: 1
-repo: roli-lpci/agent-convergence-scorer
+repo: hermes-labs-ai/agent-convergence-scorer
 granted: '2026-04-22T00:00:00Z'
 expires: '2027-04-22T00:00:00Z'
 categories:

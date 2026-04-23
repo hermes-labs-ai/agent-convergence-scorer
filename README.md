@@ -5,8 +5,8 @@
 [![PyPI](https://img.shields.io/pypi/v/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
 [![Python](https://img.shields.io/pypi/pyversions/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![CI](https://github.com/roli-lpci/agent-convergence-scorer/actions/workflows/ci.yml/badge.svg)](https://github.com/roli-lpci/agent-convergence-scorer/actions/workflows/ci.yml)
-[![Hermes Seal](https://img.shields.io/badge/hermes--seal-manifest%20staged-blue)](https://github.com/roli-lpci/hermes-seal)
+[![CI](https://github.com/hermes-labs-ai/agent-convergence-scorer/actions/workflows/ci.yml/badge.svg)](https://github.com/hermes-labs-ai/agent-convergence-scorer/actions/workflows/ci.yml)
+[![Hermes Seal](https://img.shields.io/badge/hermes--seal-manifest%20staged-blue)](https://github.com/hermes-labs-ai/hermes-seal)
 
 If you run the same prompt through N agents and want a number for "are they producing N distinct outputs or have they collapsed to one idea?" — this is that number.
 
@@ -153,18 +153,18 @@ MIT — see [LICENSE](LICENSE).
 
 | Tool | What it does |
 |---|---|
-| **[lintlang](https://github.com/roli-lpci/lintlang)** | Static linter for AI agent configs, tool descriptions, system prompts. Zero-LLM CI gate. `pip install lintlang` |
-| **[little-canary](https://github.com/roli-lpci/little-canary)** | Prompt injection detection for LLM apps using sacrificial canary-model probes + structural preflight |
-| **[hermes-jailbench](https://github.com/roli-lpci/hermes-jailbench)** | Jailbreak regression benchmark for LLM endpoints — repeatable known-pattern attacks, deterministic scoring. `pip install hermes-jailbench` |
-| **[claude-router](https://github.com/roli-lpci/claude-router)** | Router that picks the right Claude model tier + scaffold using local embeddings. `pip install claude-router` |
-| **[zer0dex](https://github.com/roli-lpci/zer0dex)** | Local dual-layer memory for AI agents — compressed index + vector retrieval |
-| **[colony-probe](https://github.com/roli-lpci/colony-probe)** | Defensive prompt confidentiality audit — detects system-prompt reconstruction via multi-turn probing |
-| **[suy-sideguy](https://github.com/roli-lpci/suy-sideguy)** | Runtime policy guard for autonomous agents — user-space enforcement + forensic reporting |
-| **[agent-gorgon](https://github.com/roli-lpci/agent-gorgon)** | Stops agents from fabricating tool output when a registered tool exists — 3-layer Claude Code hook defense |
-| **[rule-audit](https://github.com/roli-lpci/rule-audit)** | Static prompt audit — contradictions, coverage gaps, priority ambiguities, edge cases |
-| **[intent-verify](https://github.com/roli-lpci/intent-verify)** | Repo intent verification + spec-drift checks against markdown specs and handoffs |
-| **[quick-gate-python](https://github.com/roli-lpci/quick-gate-python)** / **[quick-gate-js](https://github.com/roli-lpci/quick-gate-js)** | Quality-gate CLI with bounded auto-repair + escalation artifacts |
-| **[repo-audit](https://github.com/roli-lpci/repo-audit)** | 15-second launch-readiness punch-list for any public GitHub repo |
+| **[lintlang](https://github.com/hermes-labs-ai/lintlang)** | Static linter for AI agent configs, tool descriptions, system prompts. Zero-LLM CI gate. `pip install lintlang` |
+| **[little-canary](https://github.com/hermes-labs-ai/little-canary)** | Prompt injection detection for LLM apps using sacrificial canary-model probes + structural preflight |
+| **[hermes-jailbench](https://github.com/hermes-labs-ai/hermes-jailbench)** | Jailbreak regression benchmark for LLM endpoints — repeatable known-pattern attacks, deterministic scoring. `pip install hermes-jailbench` |
+| **[claude-router](https://github.com/hermes-labs-ai/claude-router)** | Router that picks the right Claude model tier + scaffold using local embeddings. `pip install claude-router` |
+| **[zer0dex](https://github.com/hermes-labs-ai/zer0dex)** | Local dual-layer memory for AI agents — compressed index + vector retrieval |
+| **[colony-probe](https://github.com/hermes-labs-ai/colony-probe)** | Defensive prompt confidentiality audit — detects system-prompt reconstruction via multi-turn probing |
+| **[suy-sideguy](https://github.com/hermes-labs-ai/suy-sideguy)** | Runtime policy guard for autonomous agents — user-space enforcement + forensic reporting |
+| **[agent-gorgon](https://github.com/hermes-labs-ai/agent-gorgon)** | Stops agents from fabricating tool output when a registered tool exists — 3-layer Claude Code hook defense |
+| **[rule-audit](https://github.com/hermes-labs-ai/rule-audit)** | Static prompt audit — contradictions, coverage gaps, priority ambiguities, edge cases |
+| **[intent-verify](https://github.com/hermes-labs-ai/intent-verify)** | Repo intent verification + spec-drift checks against markdown specs and handoffs |
+| **[quick-gate-python](https://github.com/hermes-labs-ai/quick-gate-python)** / **[quick-gate-js](https://github.com/hermes-labs-ai/quick-gate-js)** | Quality-gate CLI with bounded auto-repair + escalation artifacts |
+| **[repo-audit](https://github.com/hermes-labs-ai/repo-audit)** | 15-second launch-readiness punch-list for any public GitHub repo |
 
 Pair this scorer with `lintlang` and `hermes-jailbench` for a defensible "is my agent behaving consistently" gate in CI.
 
