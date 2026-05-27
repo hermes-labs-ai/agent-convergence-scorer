@@ -12,7 +12,7 @@ Only the latest released version receives security fixes.
 
 Please do **not** open a public GitHub issue for security reports.
 
-Email `rbosch@lpci.ai` with subject `[security] agent-convergence-scorer`. You can expect an acknowledgement within 5 business days.
+Email `roli@hermes-labs.ai` with subject `[security] agent-convergence-scorer`. You can expect an acknowledgement within 5 business days.
 
 For coordinated disclosure, include:
 
