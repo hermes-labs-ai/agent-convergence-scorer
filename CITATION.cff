@@ -1,0 +1,35 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "agent-convergence-scorer: behavioral convergence scoring for non-deterministic LLM agents"
+abstract: >-
+  agent-convergence-scorer is a behavioral evaluation tool that scores how
+  similar N agent outputs are - exact-match rate, Jaccard token overlap,
+  divergence point, and a composite 0-1 convergence score over any fan-out of
+  agent runs. It judges agents by what they actually produce across repeated
+  trials rather than by their configuration. Stdlib-only, zero runtime
+  dependencies.
+type: software
+authors:
+  - family-names: "Bosch Rodriguez"
+    given-names: "Rolando"
+    orcid: "https://orcid.org/0009-0005-4896-1112"
+    affiliation: "Hermes Labs"
+version: "0.1.0"
+license: MIT
+repository-code: "https://github.com/hermes-labs-ai/agent-convergence-scorer"
+keywords:
+  - "AI reliability"
+  - "LLM reliability"
+  - "behavioral evaluation"
+  - "silent failure modes"
+  - "agent convergence"
+  - "non-determinism"
+  - "run-to-run agreement"
+  - "Jaccard token overlap"
+references:
+  - type: article
+    title: "A Taxonomy of Epistemic Failure Modes in Large Language Models"
+    authors:
+      - family-names: "Bosch Rodriguez"
+        given-names: "Rolando"
+    doi: "10.5281/zenodo.19042469"
