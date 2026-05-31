@@ -1,6 +1,6 @@
 # agent-convergence-scorer
 
-**Measure how similar N agent outputs are.** Score exact-match rate, Jaccard token overlap, divergence point, and a composite 0–1 convergence score over any list of agent runs.
+agent-convergence-scorer is a behavioral evaluation tool that scores how similar N agent outputs are — exact-match rate, Jaccard token overlap, divergence point, and a composite 0–1 convergence score over any list of agent runs.
 
 [![PyPI](https://img.shields.io/pypi/v/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
 [![Python](https://img.shields.io/pypi/pyversions/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
@@ -141,32 +141,7 @@ MIT — see [LICENSE](LICENSE).
 
 ## About Hermes Labs
 
-[Hermes Labs](https://hermes-labs.ai) builds AI audit infrastructure for enterprise AI systems — EU AI Act readiness, ISO 42001 evidence bundles, continuous compliance monitoring, agent-level risk testing. We work with teams shipping AI into regulated environments.
-
-**Our OSS philosophy — read this if you're deciding whether to depend on us:**
-
-- **Everything we release is MIT, fully free, forever.** No "open core," no SaaS tier upsell, no paid version with the features you actually need. You can run everything in this repo standalone, commercially, without talking to us.
-- **We open-source our own infrastructure.** This package, and the ones below, are the tools Hermes Labs uses internally to audit its own agents and to produce audit deliverables for customers. We don't publish demo code — we publish production code.
-- **We sell audit work, not licenses.** If you want an ANNEX-IV pack, an ISO 42001 evidence bundle, gap analysis against the EU AI Act, or agent-level red-teaming delivered as a report, that's at [hermes-labs.ai](https://hermes-labs.ai). If you just want the code to run it yourself, it's right here.
-
-**The Hermes Labs OSS stack** (public, MIT, open-source):
-
-| Tool | What it does |
-|---|---|
-| **[lintlang](https://github.com/hermes-labs-ai/lintlang)** | Static linter for AI agent configs, tool descriptions, system prompts. Zero-LLM CI gate. `pip install lintlang` |
-| **[little-canary](https://github.com/hermes-labs-ai/little-canary)** | Prompt injection detection for LLM apps using sacrificial canary-model probes + structural preflight |
-| **[hermes-jailbench](https://github.com/hermes-labs-ai/hermes-jailbench)** | Jailbreak regression benchmark for LLM endpoints — repeatable known-pattern attacks, deterministic scoring. `pip install hermes-jailbench` |
-| **[claude-router](https://github.com/hermes-labs-ai/claude-router)** | Router that picks the right Claude model tier + scaffold using local embeddings. `pip install claude-router` |
-| **[zer0dex](https://github.com/hermes-labs-ai/zer0dex)** | Local dual-layer memory for AI agents — compressed index + vector retrieval |
-| **[colony-probe](https://github.com/hermes-labs-ai/colony-probe)** | Defensive prompt confidentiality audit — detects system-prompt reconstruction via multi-turn probing |
-| **[suy-sideguy](https://github.com/hermes-labs-ai/suy-sideguy)** | Runtime policy guard for autonomous agents — user-space enforcement + forensic reporting |
-| **[agent-gorgon](https://github.com/hermes-labs-ai/agent-gorgon)** | Stops agents from fabricating tool output when a registered tool exists — 3-layer Claude Code hook defense |
-| **[rule-audit](https://github.com/hermes-labs-ai/rule-audit)** | Static prompt audit — contradictions, coverage gaps, priority ambiguities, edge cases |
-| **[intent-verify](https://github.com/hermes-labs-ai/intent-verify)** | Repo intent verification + spec-drift checks against markdown specs and handoffs |
-| **[quick-gate-python](https://github.com/hermes-labs-ai/quick-gate-python)** / **[quick-gate-js](https://github.com/hermes-labs-ai/quick-gate-js)** | Quality-gate CLI with bounded auto-repair + escalation artifacts |
-| **[repo-audit](https://github.com/hermes-labs-ai/repo-audit)** | 15-second launch-readiness punch-list for any public GitHub repo |
-
-Pair this scorer with `lintlang` and `hermes-jailbench` for a defensible "is my agent behaving consistently" gate in CI.
+Hermes Labs is an independent AI-reliability lab building open-source tools that catch silent failure modes in production AI. More at [hermes-labs.ai](https://hermes-labs.ai).
 
 ---
 
