@@ -60,7 +60,7 @@ https://github.com/hermes-labs-ai/agent-convergence-scorer
 Rolando Bosch / Hermes Labs (hermes-labs.ai)
 
 ## Origin
-Extracted 2026-04-22 from the Hermes Labs Cascade Hackathon — a controlled experiment measuring whether prompt framing reduces ideation collapse in N-agent fan-outs.
+Extracted 2026-04-22 from a Hermes Labs internal experiment that looked at whether prompt framing affects how much N concurrent agents converge on the same output. This is the measurement tool from that work; the experimental results are not part of this repository.
 
 ## About Hermes Labs
 
@@ -69,11 +69,8 @@ Hermes Labs is an independent AI-reliability lab building open-source tools that
 Not affiliated with NousResearch, Teknium, the Nous-Hermes LLM line, or the unrelated `hermes-agent` project. Different companies, different work.
 
 ## Companion OSS
-- lintlang (static linter for agent configs) — pip install lintlang
-- little-canary (prompt injection detection)
+Part of the Hermes Labs reliability stack: https://github.com/hermes-labs-ai
+- lintlang (static linter for agent configs) — pip install lintlang. Complementary, not overlapping: lintlang lints config structure before a run; this scorer measures output convergence after N runs.
 - hermes-jailbench (jailbreak regression benchmark) — pip install hermes-jailbench
-- claude-router (model + scaffold router) — pip install claude-router
-- zer0dex (local dual-layer agent memory)
-- agent-gorgon (stops agents fabricating tool output)
-- colony-probe (prompt confidentiality audit)
-- suy-sideguy (runtime policy guard)
+- little-canary (prompt-injection detection)
+- claude-router (model-tier + scaffold router) — pip install claude-router
