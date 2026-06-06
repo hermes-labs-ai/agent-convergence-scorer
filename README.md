@@ -1,6 +1,6 @@
 # agent-convergence-scorer
 
-agent-convergence-scorer is a behavioral evaluation tool that scores how similar N agent outputs are — exact-match rate, Jaccard token overlap, divergence point, and a composite 0–1 convergence score over any list of agent runs.
+agent-convergence-scorer is a CLI and Python library that scores how lexically similar N agent outputs are — exact-match rate, Jaccard token overlap, divergence point, and a composite 0–1 convergence score over any list of agent runs. Comparison is whitespace-lexical, not semantic (see [When not to use it](#when-not-to-use-it)).
 
 [![PyPI](https://img.shields.io/pypi/v/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
 [![Python](https://img.shields.io/pypi/pyversions/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
@@ -121,13 +121,19 @@ else:
 
 ## Origin
 
-Built during the [Hermes Labs](https://hermes-labs.ai) Cascade Hackathon on 2026-04-22, as part of a controlled experiment measuring whether prompt framing affects ideation diversity across N concurrent agents. In the prior-day baseline, 12 agents sharing context collapsed to 2 dominant idea clusters; in the cascade experiment, agents under distinct-persona or distinct-constraint framing produced 4 distinct clusters per arm of 4. This scorer is the mechanism by which the collapse was measured.
+Built during a [Hermes Labs](https://hermes-labs.ai) internal experiment on 2026-04-22 that looked at whether prompt framing affects how much N concurrent agents converge on the same output. This scorer is the measurement tool that came out of that work; the experimental results themselves are not part of this repository.
 
 ## Security and supply chain
 
 - Tamper evidence: the repository carries a staged `hermes-seal` v1 manifest at `.hermes-seal.yaml`. Signature is granted out-of-band with a root-owned key and verified by the Hermes Labs internal sealing toolchain.
 - SBOM: `sbom.cdx.json` (CycloneDX 1.5) at repo root.
 - Security policy: see [SECURITY.md](SECURITY.md).
+
+## Part of the Hermes Labs reliability stack
+
+Part of the [Hermes Labs reliability stack](https://github.com/hermes-labs-ai) of open-source tools for catching silent failure modes in production AI.
+
+A complementary (not overlapping) sibling is [lintlang](https://github.com/hermes-labs-ai/lintlang): lintlang statically lints agent-config structure *before* a run; agent-convergence-scorer measures how much the actual outputs converge *after* N runs. Different layers — config-time vs runtime — not duplicates.
 
 ## Contributing
 
