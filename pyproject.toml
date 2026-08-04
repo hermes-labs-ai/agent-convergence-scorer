@@ -57,6 +57,7 @@ agent-convergence-scorer = "agent_convergence_scorer.cli:main"
 
 [project.urls]
 Homepage = "https://github.com/hermes-labs-ai/agent-convergence-scorer"
+Documentation = "https://github.com/hermes-labs-ai/agent-convergence-scorer#readme"
 Repository = "https://github.com/hermes-labs-ai/agent-convergence-scorer"
 Issues = "https://github.com/hermes-labs-ai/agent-convergence-scorer/issues"
 Changelog = "https://github.com/hermes-labs-ai/agent-convergence-scorer/blob/main/CHANGELOG.md"
