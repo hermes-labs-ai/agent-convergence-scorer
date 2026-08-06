@@ -6,7 +6,6 @@ agent-convergence-scorer is a CLI and Python library that scores how lexically s
 [![Python](https://img.shields.io/pypi/pyversions/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![CI](https://github.com/hermes-labs-ai/agent-convergence-scorer/actions/workflows/ci.yml/badge.svg)](https://github.com/hermes-labs-ai/agent-convergence-scorer/actions/workflows/ci.yml)
-[![Hermes Seal](https://img.shields.io/badge/hermes--seal-manifest%20staged-blue)](https://github.com/hermes-labs-ai/hermes-seal)
 
 If you run the same prompt through N agents and want a number for "are they producing N distinct outputs or have they collapsed to one idea?" — this is that number.
 
@@ -125,7 +124,6 @@ Built during a [Hermes Labs](https://hermes-labs.ai) internal experiment on 2026
 
 ## Security and supply chain
 
-- Tamper evidence: the repository carries a staged `hermes-seal` v1 manifest at `.hermes-seal.yaml`. Signature is granted out-of-band with a root-owned key and verified by the Hermes Labs internal sealing toolchain.
 - SBOM: `sbom.cdx.json` (CycloneDX 1.5) at repo root.
 - Security policy: see [SECURITY.md](SECURITY.md).
 
@@ -147,7 +145,9 @@ MIT — see [LICENSE](LICENSE).
 
 ## About Hermes Labs
 
-Hermes Labs is an independent AI-reliability lab building open-source tools that catch silent failure modes in production AI. More at [hermes-labs.ai](https://hermes-labs.ai).
+[Hermes Labs](https://hermes-labs.ai) is an AI reliability engineering studio for product and engineering teams shipping production agents and LLM applications. We find the structural AI failures standard evals miss, then harden retrieval, memory, agents, and the language layers around production AI systems with runtime controls and defensible evidence.
+
+Browse the [open-source catalog](https://hermes-labs.ai/open-source) or contact [roli@hermes-labs.ai](mailto:roli@hermes-labs.ai).
 
 ---
 
