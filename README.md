@@ -51,6 +51,32 @@ Output:
 }
 ```
 
+### Optional CI threshold
+
+Use `--min-convergence` to fail a job when the same public score reported in
+the JSON is below an inclusive threshold. This command passes because the
+score is exactly `1.0`:
+
+```bash
+printf '%s\n' '{"runs": ["same output", "same output"]}' \
+  | agent-convergence-scorer --min-convergence 1.0 -
+```
+
+When the option is supplied, the otherwise compatible JSON result gains this
+one field:
+
+```json
+"minimum_convergence": {"threshold": 0.8, "passed": false}
+```
+
+The command exits `0` when the score is at least the threshold (including
+equality), and `3` when it is below it. On a threshold failure it still writes
+valid JSON to stdout and writes a concise explanation to stderr, so CI can
+read `minimum_convergence.passed` without parsing human text. Without
+`--min-convergence`, output and exit behavior are unchanged. Invalid threshold
+values (including `NaN`, infinity, and values outside `[0, 1]`) are argparse
+usage errors with exit code `2`.
+
 Interpret:
 
 - `convergence_score = 0.703` — high but not perfect consistency.
@@ -102,6 +128,14 @@ Individual metrics are importable too: `exact_match_rate`, `token_overlap`, `div
 - **Concurrency-safe incremental scoring over streams** — this is a batch tool.
 
 The composite weights (50/30/20) are heuristic; override by calling the individual functions and combining yourself.
+
+`score_runs([])` raises `ValueError`: no runs are not evidence of convergence.
+For Jaccard overlap, two runs whose whitespace token sets are both empty have
+overlap `1.0`; this applies even if their original bytes differ (for example,
+`" "` and `"\t"`). Exact-match rate remains byte-exact. A
+`divergence_point.diverges_at_token` of `null` means no token disagreement was
+found before the shortest run ended; it does not prove the full runs are byte
+identical, so prefix cases retain `null` in either direction.
 
 ## Example: measuring a hackathon collapse
 

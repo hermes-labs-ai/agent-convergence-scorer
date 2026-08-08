@@ -66,8 +66,12 @@ Exit codes:
 - `0` — success
 - `1` — input error (missing file, invalid JSON, wrong shape, non-string elements)
 - `2` — usage error (argparse built-in)
+- `3` — `--min-convergence` threshold not met (stdout remains valid JSON)
 
-Stderr is a single human-readable error line on non-zero exit; stdout is empty on error. No stacktrace leaks.
+For input and usage errors, stderr is a single human-readable error line and
+stdout is empty. A threshold failure is the documented exception: it writes a
+valid JSON result to stdout and a single human-readable explanation to stderr.
+No stacktrace leaks.
 
 ## Expected output shape
 
@@ -90,12 +94,24 @@ Stderr is a single human-readable error line on non-zero exit; stdout is empty o
 
 All float fields round to 3 decimal places.
 
+With `--min-convergence FLOAT`, the CLI compares the displayed
+`convergence_score` to an inclusive finite threshold in `[0, 1]`. The JSON
+result gains `"minimum_convergence": {"threshold": <float>, "passed": <bool>}`
+only when the option is supplied. Invalid thresholds are usage errors (exit
+`2`); a valid unmet threshold returns exit `3` and a human-readable stderr
+message.
+
 ## Known limitations
 
 - Tokenizer is `str.lower().split()`. Punctuation becomes part of tokens (`"Paris."` ≠ `"Paris"`).
 - Composite weights (50/30/20) are heuristic, not learned.
 - `divergence_point` walks up to `min(len(tokenize(r)) for r in runs)` — if one run is much shorter, the divergence search is capped by the shortest.
 - `token_overlap.jaccard` is the *first two runs only* (legacy eyeball metric). Prefer `avg_overlap` for N > 2.
+- Two empty token sets have Jaccard overlap `1.0`, even when the original
+  whitespace-only strings are byte-different. Exact-match rate remains
+  byte-exact.
+- `divergence_point.diverges_at_token = null` means no disagreement before the
+  shortest token sequence ended; it also represents either prefix direction.
 - No semantic understanding.
 
 ## Common failure cases
@@ -107,6 +123,7 @@ All float fields round to 3 decimal places.
 | Missing file | exit 1, stderr `"error: file not found: <path>"` |
 | Malformed JSON | exit 1, stderr `"error: invalid JSON in <path>: <reason>"` |
 | Single-run list `["only"]` | convergence_score = 1.0 (trivially), no error |
+| `score_runs([])` in the library | raises `ValueError`; no runs are not perfect convergence |
 
 ## What counts as success when contributing
 

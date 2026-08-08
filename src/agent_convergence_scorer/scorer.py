@@ -38,20 +38,20 @@ def token_overlap(runs: list[str]) -> dict[str, float]:
         return {"avg_overlap": 1.0, "jaccard": 1.0}
 
     tokenized = [set(tokenize(r)) for r in runs]
-    union01 = tokenized[0] | tokenized[1]
-    inter01 = tokenized[0] & tokenized[1]
-    jaccard = len(inter01) / len(union01) if union01 else 0.0
+
+    def jaccard(left: set[str], right: set[str]) -> float:
+        union = left | right
+        return len(left & right) / len(union) if union else 1.0
+
+    jaccard01 = jaccard(tokenized[0], tokenized[1])
 
     overlaps: list[float] = []
     for i in range(len(tokenized)):
         for j in range(i + 1, len(tokenized)):
-            pair_union = tokenized[i] | tokenized[j]
-            pair_inter = tokenized[i] & tokenized[j]
-            if pair_union:
-                overlaps.append(len(pair_inter) / len(pair_union))
+            overlaps.append(jaccard(tokenized[i], tokenized[j]))
 
     avg_overlap = sum(overlaps) / len(overlaps) if overlaps else 1.0
-    return {"avg_overlap": round(avg_overlap, 3), "jaccard": round(jaccard, 3)}
+    return {"avg_overlap": round(avg_overlap, 3), "jaccard": round(jaccard01, 3)}
 
 
 def divergence_point(runs: list[str]) -> dict[str, Any]:
@@ -112,7 +112,14 @@ def score_runs(runs: list[str]) -> dict[str, Any]:
     """Compute all four metrics for a list of agent runs.
 
     Convenience wrapper. Returns a dict shaped for JSON output.
+
+    Raises:
+        ValueError: If ``runs`` is empty. A convergence score needs at least
+            one observed run; an empty collection is not perfect convergence.
     """
+    if not runs:
+        raise ValueError("runs must be a non-empty list of strings")
+
     return {
         "num_runs": len(runs),
         "exact_match_rate": exact_match_rate(runs),

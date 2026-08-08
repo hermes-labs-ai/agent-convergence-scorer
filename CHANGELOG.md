@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] — 2026-08-08
+
+### Added
+- Optional `--min-convergence FLOAT` CLI gate. It compares the reported
+  `convergence_score` to an inclusive finite threshold in `[0, 1]`, emits a
+  machine-readable result, and exits `3` when the threshold is not met.
+
+### Changed
+- `score_runs([])` now raises `ValueError` instead of reporting perfect
+  convergence.
+- Jaccard overlap treats two empty token sets as identical (`1.0`).
+
 ### Changed
 - Added a package metadata link to the project documentation.
 
@@ -32,3 +44,4 @@ prompt framing affects ideation convergence across N concurrent agents.
 The scorer provided the method by which that experiment measured collapse.
 
 [0.1.0]: https://github.com/hermes-labs-ai/agent-convergence-scorer/releases/tag/v0.1.0
+[0.1.2]: https://github.com/hermes-labs-ai/agent-convergence-scorer/compare/v0.1.1...v0.1.2
