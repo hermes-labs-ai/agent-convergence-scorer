@@ -123,7 +123,7 @@ message.
 | Missing file | exit 1, stderr `"error: file not found: <path>"` |
 | Malformed JSON | exit 1, stderr `"error: invalid JSON in <path>: <reason>"` |
 | Single-run list `["only"]` | convergence_score = 1.0 (trivially), no error |
-| `score_runs([])` in the library | raises `ValueError`; no runs are not perfect convergence |
+| `[]` in any exported scoring metric | raises `ValueError`; no runs are not perfect convergence |
 
 ## What counts as success when contributing
 

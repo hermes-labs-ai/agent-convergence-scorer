@@ -16,8 +16,17 @@ def tokenize(text: str) -> list[str]:
     return text.lower().split()
 
 
+def _require_non_empty_runs(runs: list[str]) -> None:
+    if not runs:
+        raise ValueError("runs must be a non-empty list of strings")
+
+
 def exact_match_rate(runs: list[str]) -> float:
-    """Fraction of runs identical to run[0]. Range [0, 1]. 1.0 if len(runs) < 2."""
+    """Fraction of runs identical to run[0]. Range [0, 1].
+
+    Raises ValueError for an empty run list. A single run has rate 1.0.
+    """
+    _require_non_empty_runs(runs)
     if len(runs) < 2:
         return 1.0
     first = runs[0]
@@ -32,8 +41,10 @@ def token_overlap(runs: list[str]) -> dict[str, float]:
         avg_overlap: mean pairwise Jaccard across all C(N,2) pairs. Range [0, 1].
         jaccard: Jaccard of the first two runs only (kept for quick eyeballing).
 
-    If len(runs) < 2, returns {"avg_overlap": 1.0, "jaccard": 1.0} by convention.
+    Raises ValueError for an empty run list. For one run, returns
+    {"avg_overlap": 1.0, "jaccard": 1.0} by convention.
     """
+    _require_non_empty_runs(runs)
     if len(runs) < 2:
         return {"avg_overlap": 1.0, "jaccard": 1.0}
 
@@ -62,7 +73,10 @@ def divergence_point(runs: list[str]) -> dict[str, Any]:
             None if all runs are identical up to min length.
         token_position: 0-indexed position. Equals min_len if no divergence.
         num_tokens_to_divergence: alias for token_position, kept for readability.
+
+    Raises ValueError for an empty run list. A single run has no divergence.
     """
+    _require_non_empty_runs(runs)
     if len(runs) < 2:
         return {"diverges_at_token": None, "token_position": 0, "num_tokens_to_divergence": 0}
 
@@ -93,8 +107,10 @@ def convergence_score(runs: list[str]) -> dict[str, float]:
         0.3 * avg_token_overlap
         0.2 * normalized_divergence_distance   (where divergence at end = 1.0)
 
-    Returns {"convergence_score": float}. If len(runs) < 2, returns 1.0.
+    Returns {"convergence_score": float}. Raises ValueError for an empty run
+    list. A single run returns 1.0.
     """
+    _require_non_empty_runs(runs)
     if len(runs) < 2:
         return {"convergence_score": 1.0}
 
@@ -117,8 +133,7 @@ def score_runs(runs: list[str]) -> dict[str, Any]:
         ValueError: If ``runs`` is empty. A convergence score needs at least
             one observed run; an empty collection is not perfect convergence.
     """
-    if not runs:
-        raise ValueError("runs must be a non-empty list of strings")
+    _require_non_empty_runs(runs)
 
     return {
         "num_runs": len(runs),

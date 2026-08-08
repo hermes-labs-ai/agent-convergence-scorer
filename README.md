@@ -129,7 +129,8 @@ Individual metrics are importable too: `exact_match_rate`, `token_overlap`, `div
 
 The composite weights (50/30/20) are heuristic; override by calling the individual functions and combining yourself.
 
-`score_runs([])` raises `ValueError`: no runs are not evidence of convergence.
+All exported scoring metrics reject `[]` with `ValueError`: no runs are not
+evidence of convergence. A single run remains the defined trivial case.
 For Jaccard overlap, two runs whose whitespace token sets are both empty have
 overlap `1.0`; this applies even if their original bytes differ (for example,
 `" "` and `"\t"`). Exact-match rate remains byte-exact. A

@@ -45,8 +45,14 @@ def test_exact_match_single_run():
     assert exact_match_rate(["only run"]) == 1.0
 
 
-def test_exact_match_empty():
-    assert exact_match_rate([]) == 1.0
+@pytest.mark.parametrize(
+    "metric",
+    [exact_match_rate, token_overlap, divergence_point, convergence_score, score_runs],
+    ids=["exact_match_rate", "token_overlap", "divergence_point", "convergence_score", "score_runs"],
+)
+def test_exported_metrics_reject_empty_runs(metric):
+    with pytest.raises(ValueError, match="runs must be a non-empty list of strings"):
+        metric([])
 
 
 def test_token_overlap_identical():
@@ -163,11 +169,6 @@ def test_score_runs_shape():
         "convergence_score",
         "divergence_point",
     }
-
-
-def test_score_runs_empty_raises_value_error():
-    with pytest.raises(ValueError, match="non-empty"):
-        score_runs([])
 
 
 @pytest.mark.parametrize(

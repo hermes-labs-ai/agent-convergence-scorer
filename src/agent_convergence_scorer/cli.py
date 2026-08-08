@@ -94,8 +94,9 @@ def main(argv: list[str] | None = None) -> int:
         type=_minimum_convergence,
         metavar="FLOAT",
         help=(
-            "require the reported convergence score to be at least FLOAT "
-            "(finite value in [0, 1]; equality passes)"
+            "require an inclusive minimum reported convergence score: FLOAT "
+            "must be finite in [0, 1]; equality passes. A failure exits 3, "
+            "keeps JSON stdout valid, and writes a human-readable failure to stderr"
         ),
     )
     parser.add_argument(

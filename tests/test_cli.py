@@ -158,6 +158,23 @@ def test_minimum_convergence_invalid_values_are_usage_errors(tmp_path, value: st
     assert "finite number in [0, 1]" in result.stderr
 
 
+def test_cli_help_discloses_minimum_convergence_contract():
+    result = subprocess.run(
+        [sys.executable, "-m", "agent_convergence_scorer", "--help"],
+        capture_output=True,
+        text=True,
+        check=False,
+        env=_module_env(),
+    )
+    assert result.returncode == 0
+    help_text = " ".join(result.stdout.split())
+    assert "inclusive minimum reported convergence score" in help_text
+    assert "finite in [0, 1]" in help_text
+    assert "failure exits 3" in help_text
+    assert "JSON stdout valid" in help_text
+    assert "human-readable failure to stderr" in help_text
+
+
 def test_cli_module_invocation(tmp_path):
     p = _write_json(tmp_path, ["a", "a"])
     result = subprocess.run(
