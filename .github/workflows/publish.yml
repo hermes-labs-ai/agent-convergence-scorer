@@ -3,25 +3,191 @@ name: Publish to PyPI
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Published GitHub release tag to recover
+        required: true
+        type: string
 
 permissions:
   contents: read
 
 jobs:
-  publish:
-    name: Build and publish to PyPI
+  validate:
+    name: Validate release artifacts
     runs-on: ubuntu-latest
+    outputs:
+      artifact-id: ${{ steps.artifact.outputs.artifact-id }}
+    steps:
+      - name: Require main for manual recovery
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          WORKFLOW_REF: ${{ github.ref }}
+        run: |
+          if [ "$WORKFLOW_REF" != "refs/heads/main" ]; then
+            echo "::error::Manual recovery must be dispatched from refs/heads/main; received $WORKFLOW_REF. Refusing to publish from a non-default or stale branch revision."
+            exit 1
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7
+        with:
+          python-version: "3.12"
+
+      - name: Resolve and verify the published release
+        id: release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || inputs.tag }}
+        run: |
+          python -m pip install --upgrade pip "packaging>=24"
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import os
+          import sys
+          from packaging.version import InvalidVersion, Version
+
+          tag = os.environ["RELEASE_TAG"]
+          if not tag or tag != tag.strip():
+              sys.exit("release tag must be non-empty and contain no surrounding whitespace")
+
+          version_text = tag[1:] if tag.startswith("v") else tag
+          try:
+              version = Version(version_text)
+          except InvalidVersion as error:
+              sys.exit(f"release tag is not a valid Python version: {error}")
+
+          print(f"tag={tag}")
+          print(f"version={version}")
+          PY
+
+          release_json="$(gh release view "$RELEASE_TAG" --repo "$GITHUB_REPOSITORY" \
+            --json isDraft,isPrerelease,tagName)"
+          export RELEASE_JSON="$release_json"
+          python - <<'PY'
+          import json
+          import os
+          import sys
+
+          release = json.loads(os.environ["RELEASE_JSON"])
+          if release["tagName"] != os.environ["RELEASE_TAG"]:
+              sys.exit("GitHub release tag did not match the requested tag")
+          if release["isDraft"] or release["isPrerelease"]:
+              sys.exit("release must be published and neither draft nor prerelease")
+          PY
+
+      # Operational dependency: protect release tags from create, update, delete,
+      # and retargeting. This check only proves the tag's current dereferenced commit.
+      - name: Check out the exact release tag
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          ref: refs/tags/${{ steps.release.outputs.tag }}
+
+      - name: Confirm checked-out commit belongs to the release tag
+        env:
+          RELEASE_TAG: ${{ steps.release.outputs.tag }}
+        run: |
+          tag_commit="$(git rev-parse "refs/tags/${RELEASE_TAG}^{commit}")"
+          head_commit="$(git rev-parse HEAD)"
+          if [ "$head_commit" != "$tag_commit" ]; then
+            echo "::error::Release tag $RELEASE_TAG dereferences to commit $tag_commit, but checkout is at $head_commit. Refusing to build an artifact from a commit other than the release tag."
+            exit 1
+          fi
+
+      - name: Build sdist and wheel
+        run: |
+          python -m pip install "build~=1.2" "twine>=6.2"
+          python -m build --outdir dist
+
+      - name: Check package metadata
+        run: python -m twine check dist/*
+
+      - name: Smoke-test the built wheel's installed versions
+        env:
+          RELEASE_VERSION: ${{ steps.release.outputs.version }}
+        run: |
+          wheel="$(python - <<'PY'
+          from pathlib import Path
+          import sys
+
+          wheels = tuple(Path("dist").glob("*.whl"))
+          if len(wheels) != 1:
+              sys.exit(f"expected exactly one wheel, found {len(wheels)}")
+          print(wheels[0])
+          PY
+          )"
+          python -m venv .release-smoke-venv
+          .release-smoke-venv/bin/python -m pip install --no-deps "$wheel"
+          python - .release-smoke-venv/bin/python "$RELEASE_VERSION" <<'PY'
+          import json
+          import subprocess
+          import sys
+          from packaging.version import Version
+
+          python, expected_text = sys.argv[1:]
+          expected = Version(expected_text)
+
+          metadata = subprocess.check_output(
+              [python, "-c", "from importlib.metadata import version; print(version('agent-convergence-scorer'))"],
+              text=True,
+          ).strip()
+          cli = subprocess.check_output(
+              [python, "-m", "agent_convergence_scorer", "--version"], text=True
+          ).strip()
+          console_script = subprocess.check_output(
+              [".release-smoke-venv/bin/agent-convergence-scorer", "--version"], text=True
+          ).strip()
+          stdin_smoke = subprocess.run(
+              [".release-smoke-venv/bin/agent-convergence-scorer", "-"],
+              input='{"runs": ["a", "a", "b"]}\n',
+              text=True,
+              capture_output=True,
+              check=True,
+          )
+          stdin_result = json.loads(stdin_smoke.stdout)
+          if stdin_smoke.stderr or stdin_result.get("num_runs") != 3:
+              sys.exit("clean-installed console CLI stdin smoke failed")
+
+          observed = {
+              "installed distribution metadata": metadata,
+              "python -m agent_convergence_scorer --version": cli.rsplit(" ", 1)[-1],
+              "agent-convergence-scorer --version": console_script.rsplit(" ", 1)[-1],
+          }
+          mismatches = {
+              name: value for name, value in observed.items() if Version(value) != expected
+          }
+          print(json.dumps(observed, sort_keys=True))
+          if mismatches:
+              sys.exit(f"installed versions do not match release version {expected}: {mismatches}")
+          PY
+
+      - name: Upload validated artifacts
+        id: artifact
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        with:
+          name: pypi-dist
+          path: dist/
+          if-no-files-found: error
+
+  publish:
+    name: Publish validated artifacts to PyPI
+    needs: validate
+    runs-on: ubuntu-latest
+    # GitHub must protect this environment with required reviewers. PyPI must trust
+    # this repository, .github/workflows/publish.yml, and the pypi environment.
+    environment:
+      name: pypi
     permissions:
       id-token: write
     steps:
-      - uses: actions/checkout@v7
-      - name: Set up Python
-        uses: actions/setup-python@v7
+      - name: Download validated artifacts
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
         with:
-          python-version: "3.12"
-      - name: Build sdist and wheel
-        run: |
-          python -m pip install --upgrade pip build
-          python -m build
+          artifact-ids: ${{ needs.validate.outputs.artifact-id }}
+          path: dist/
+
       - name: Publish to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # release/v1
+        with:
+          packages-dir: dist/
