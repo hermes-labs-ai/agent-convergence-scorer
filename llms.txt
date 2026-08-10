@@ -31,6 +31,15 @@ agent-convergence-scorer input.json
 - divergence_point.diverges_at_token: str | null
 - convergence_score: float [0, 1]  (composite: 0.5*exact + 0.3*avg_overlap + 0.2*div_distance_norm)
 
+Optional CI gate: `agent-convergence-scorer --min-convergence FLOAT INPUT`
+accepts a finite inclusive threshold in [0, 1]. It compares against the
+reported convergence_score, adds
+`minimum_convergence: {"threshold": float, "passed": bool}` to JSON only
+when requested, and exits 3 when the threshold is not met. Invalid values are
+argparse usage errors (exit 2). Every exported scoring metric raises ValueError
+for `[]`. Two empty whitespace-token sets have Jaccard 1.0; null divergence
+token can represent either prefix direction, not byte identity.
+
 ## When to use
 - CI gate for prompt-rerun consistency
 - Multi-agent fan-out collapse detection

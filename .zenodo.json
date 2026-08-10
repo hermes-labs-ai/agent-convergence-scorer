@@ -1,6 +1,6 @@
 {
   "upload_type": "software",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "title": "agent-convergence-scorer: behavioral convergence scoring for non-deterministic LLM agents",
   "description": "agent-convergence-scorer is a behavioral evaluation tool that scores how similar N agent outputs are - exact-match rate, Jaccard token overlap, divergence point, and a composite 0-1 convergence score over any fan-out of agent runs. It judges agents by what they actually produce across repeated trials rather than by their configuration, turning run-to-run divergence into a single number you can gate CI on. Stdlib-only, zero runtime dependencies.",
   "creators": [

@@ -45,8 +45,14 @@ def test_exact_match_single_run():
     assert exact_match_rate(["only run"]) == 1.0
 
 
-def test_exact_match_empty():
-    assert exact_match_rate([]) == 1.0
+@pytest.mark.parametrize(
+    "metric",
+    [exact_match_rate, token_overlap, divergence_point, convergence_score, score_runs],
+    ids=["exact_match_rate", "token_overlap", "divergence_point", "convergence_score", "score_runs"],
+)
+def test_exported_metrics_reject_empty_runs(metric):
+    with pytest.raises(ValueError, match="runs must be a non-empty list of strings"):
+        metric([])
 
 
 def test_token_overlap_identical():
@@ -74,6 +80,17 @@ def test_token_overlap_single_run():
     assert token_overlap(["only run"]) == {"avg_overlap": 1.0, "jaccard": 1.0}
 
 
+def test_token_overlap_both_empty_token_sets_are_identical():
+    assert token_overlap([" ", "\t"]) == {"avg_overlap": 1.0, "jaccard": 1.0}
+
+
+def test_whitespace_only_byte_different_runs_keep_exact_match_distinct():
+    result = score_runs([" ", "\t"])
+    assert result["exact_match_rate"] == 0.5
+    assert result["token_metrics"] == {"avg_overlap": 1.0, "jaccard": 1.0}
+    assert result["divergence_point"]["diverges_at_token"] is None
+
+
 def test_divergence_identical():
     runs = ["the answer is 42", "the answer is 42"]
     assert divergence_point(runs)["num_tokens_to_divergence"] >= 4
@@ -93,6 +110,16 @@ def test_divergence_single_run():
     result = divergence_point(["only"])
     assert result["diverges_at_token"] is None
     assert result["token_position"] == 0
+
+
+@pytest.mark.parametrize("runs", [["alpha beta", "alpha"], ["alpha", "alpha beta"]])
+def test_divergence_prefixes_keep_null_contract_in_both_directions(runs: list[str]):
+    result = divergence_point(runs)
+    assert result == {
+        "diverges_at_token": None,
+        "token_position": 1,
+        "num_tokens_to_divergence": 1,
+    }
 
 
 def test_convergence_score_perfect():

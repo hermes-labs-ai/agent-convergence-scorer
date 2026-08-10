@@ -10,17 +10,21 @@ output. Each test asserts exactly that contract.
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
 
 
 def _run(args: list[str]) -> subprocess.CompletedProcess[str]:
+    source_root = Path(__file__).resolve().parents[1] / "src"
+    existing = os.environ.get("PYTHONPATH", "")
     return subprocess.run(
         [sys.executable, "-m", "agent_convergence_scorer", *args],
         capture_output=True,
         text=True,
         check=False,
+        env={**os.environ, "PYTHONPATH": f"{source_root}{os.pathsep}{existing}"},
     )
 
 
