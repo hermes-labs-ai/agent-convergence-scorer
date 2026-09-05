@@ -33,25 +33,30 @@ def token_overlap(runs: list[str]) -> dict[str, float]:
         jaccard: Jaccard of the first two runs only (kept for quick eyeballing).
 
     If len(runs) < 2, returns {"avg_overlap": 1.0, "jaccard": 1.0} by convention.
+    A pair whose token sets are both empty (e.g. two empty strings) is identical
+    and counts as perfect overlap (1.0) rather than being dropped or scored 0.0.
     """
     if len(runs) < 2:
         return {"avg_overlap": 1.0, "jaccard": 1.0}
 
     tokenized = [set(tokenize(r)) for r in runs]
-    union01 = tokenized[0] | tokenized[1]
-    inter01 = tokenized[0] & tokenized[1]
-    jaccard = len(inter01) / len(union01) if union01 else 0.0
+    jaccard = _pair_jaccard(tokenized[0], tokenized[1])
 
     overlaps: list[float] = []
     for i in range(len(tokenized)):
         for j in range(i + 1, len(tokenized)):
-            pair_union = tokenized[i] | tokenized[j]
-            pair_inter = tokenized[i] & tokenized[j]
-            if pair_union:
-                overlaps.append(len(pair_inter) / len(pair_union))
+            overlaps.append(_pair_jaccard(tokenized[i], tokenized[j]))
 
-    avg_overlap = sum(overlaps) / len(overlaps) if overlaps else 1.0
+    avg_overlap = sum(overlaps) / len(overlaps)
     return {"avg_overlap": round(avg_overlap, 3), "jaccard": round(jaccard, 3)}
+
+
+def _pair_jaccard(a: set[str], b: set[str]) -> float:
+    """Jaccard similarity of two token sets. Two empty sets are identical -> 1.0."""
+    union = a | b
+    if not union:
+        return 1.0
+    return len(a & b) / len(union)
 
 
 def divergence_point(runs: list[str]) -> dict[str, Any]:

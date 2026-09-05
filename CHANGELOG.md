@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+- `token_overlap` now treats a pair of empty token sets (e.g. two empty or
+  whitespace-only runs) as perfect overlap (`1.0`) instead of `0.0`, and no longer
+  drops such pairs from `avg_overlap`. All-empty N-run inputs now yield
+  `avg_overlap = jaccard = 1.0` and `convergence_score = 1.0`, consistent with
+  the runs being identical.
+
 ## [0.1.0] — 2026-04-22
 
 Initial public release.

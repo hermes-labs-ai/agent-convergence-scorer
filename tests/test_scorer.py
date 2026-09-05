@@ -74,6 +74,30 @@ def test_token_overlap_single_run():
     assert token_overlap(["only run"]) == {"avg_overlap": 1.0, "jaccard": 1.0}
 
 
+def test_token_overlap_all_empty_pair_is_perfect():
+    # Two empty runs are identical: empty-set pair must score 1.0, not 0.0.
+    assert token_overlap(["", ""]) == {"avg_overlap": 1.0, "jaccard": 1.0}
+
+
+def test_token_overlap_all_empty_n_runs_is_perfect():
+    assert token_overlap([""] * 4) == {"avg_overlap": 1.0, "jaccard": 1.0}
+
+
+def test_token_overlap_whitespace_only_is_empty_and_perfect():
+    assert token_overlap(["", "   ", "\n\t"]) == {"avg_overlap": 1.0, "jaccard": 1.0}
+
+
+def test_token_overlap_empty_pair_counted_in_mixed_input():
+    # Pairs: ("", "") -> 1.0, ("", "x") -> 0.0, ("", "x") -> 0.0 => mean 1/3.
+    result = token_overlap(["", "", "x"])
+    assert result["avg_overlap"] == 0.333
+    assert result["jaccard"] == 1.0
+
+
+def test_token_overlap_empty_vs_nonempty_is_zero():
+    assert token_overlap(["", "x"]) == {"avg_overlap": 0.0, "jaccard": 0.0}
+
+
 def test_divergence_identical():
     runs = ["the answer is 42", "the answer is 42"]
     assert divergence_point(runs)["num_tokens_to_divergence"] >= 4
@@ -114,6 +138,18 @@ def test_convergence_score_bounds():
 
 def test_convergence_score_single_run():
     assert convergence_score(["only"])["convergence_score"] == 1.0
+
+
+def test_convergence_score_all_empty_runs_is_perfect():
+    assert convergence_score(["", ""])["convergence_score"] == 1.0
+    assert convergence_score([""] * 5)["convergence_score"] == 1.0
+
+
+def test_score_runs_all_empty_is_perfect():
+    result = score_runs(["", "", ""])
+    assert result["exact_match_rate"] == 1.0
+    assert result["token_metrics"] == {"avg_overlap": 1.0, "jaccard": 1.0}
+    assert result["convergence_score"] == 1.0
 
 
 def test_score_runs_perfect():
