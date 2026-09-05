@@ -2,6 +2,32 @@
 
 agent-convergence-scorer is a CLI and Python library that scores how lexically similar N agent outputs are — exact-match rate, Jaccard token overlap, divergence point, and a composite 0–1 convergence score over any list of agent runs. Comparison is whitespace-lexical, not semantic (see [When not to use it](#when-not-to-use-it)).
 
+## Post-run receipt for parallel agents
+
+For a thin, provider-independent post-run integration, the `receipt` command
+accepts structured parallel-agent results and emits a separately versioned
+machine-readable receipt. Its only decisions are `review` and `investigate`;
+`acceptance_authority` is always `false`.
+
+```bash
+agent-convergence-scorer receipt --min-convergence 0.6 examples/hermes_parallel_results.json
+```
+
+Input must contain at least two results with unique non-empty `agent_id` values
+and string `output` fields. Extra metadata may remain in the upstream record:
+
+```json
+{"results": [{"agent_id": "research-a", "output": "..."}, {"agent_id": "research-b", "output": "..."}]}
+```
+
+A passing threshold exits `0` and returns `review`; an unmet threshold still
+prints valid JSON, returns exit `3`, and returns `investigate`. Use the minimum
+only for expected reproducibility across same-task reruns. Do not use high
+convergence as success for ideation or diversity work, where convergence can
+instead indicate collapse. The receipt is lexical-output evidence only: it does
+not establish semantic agreement, correctness, or permission to accept, merge,
+deploy, or skip tests/review.
+
 [![PyPI](https://img.shields.io/pypi/v/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
 [![Python](https://img.shields.io/pypi/pyversions/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)

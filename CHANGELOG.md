@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] — 2026-09-05
+
+### Added
+- `receipt` CLI adapter for Hermes-shaped parallel agent results. It emits a
+  separately versioned, machine-readable lexical convergence receipt with only
+  `review` or `investigate` decisions and `acceptance_authority: false`.
+- Checked-in three-agent fixture demonstrating the post-run receipt contract.
+
 ## [0.1.2] — 2026-08-08
 
 ### Added
