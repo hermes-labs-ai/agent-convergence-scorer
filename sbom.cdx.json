@@ -14,9 +14,9 @@
     ],
     "component": {
       "type": "library",
-      "bom-ref": "pkg:pypi/agent-convergence-scorer@0.1.2",
+      "bom-ref": "pkg:pypi/agent-convergence-scorer@0.2.0",
       "name": "agent-convergence-scorer",
-      "version": "0.1.2",
+      "version": "0.2.0",
       "description": "Score how similar N agent outputs are.",
       "licenses": [
         {
@@ -25,7 +25,7 @@
           }
         }
       ],
-      "purl": "pkg:pypi/agent-convergence-scorer@0.1.2",
+      "purl": "pkg:pypi/agent-convergence-scorer@0.2.0",
       "externalReferences": [
         {
           "type": "website",
@@ -51,7 +51,7 @@
   "components": [],
   "dependencies": [
     {
-      "ref": "pkg:pypi/agent-convergence-scorer@0.1.2",
+      "ref": "pkg:pypi/agent-convergence-scorer@0.2.0",
       "dependsOn": []
     }
   ]

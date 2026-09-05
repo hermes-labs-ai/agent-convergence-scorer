@@ -1,0 +1,18 @@
+{
+  "schema": "hermes.parallel-agent-results.v1",
+  "task_id": "example-evidence-review",
+  "results": [
+    {
+      "agent_id": "research-a",
+      "output": "Require citations and preserve the documented boundary."
+    },
+    {
+      "agent_id": "research-b",
+      "output": "Require citations and preserve the documented boundary."
+    },
+    {
+      "agent_id": "research-c",
+      "output": "Require citations but investigate the documented boundary."
+    }
+  ]
+}

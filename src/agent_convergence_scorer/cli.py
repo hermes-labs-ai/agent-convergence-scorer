@@ -24,6 +24,7 @@ import sys
 from typing import Any
 
 from agent_convergence_scorer import __version__
+from agent_convergence_scorer.receipt import make_post_run_receipt
 from agent_convergence_scorer.scorer import score_runs
 
 THRESHOLD_NOT_MET_EXIT_CODE = 3
@@ -76,7 +77,56 @@ def _normalize_minimum_convergence_argument(argv: list[str] | None) -> list[str]
     return normalized
 
 
+def _receipt_main(argv: list[str]) -> int:
+    """Run the separately versioned Hermes post-run receipt adapter."""
+    parser = argparse.ArgumentParser(
+        prog="agent-convergence-scorer receipt",
+        description=(
+            "Turn Hermes-shaped parallel agent-result JSON into a lexical "
+            "convergence receipt. Decisions are review or investigate only."
+        ),
+    )
+    parser.add_argument("input", help='JSON file (or "-" for stdin) with a results list')
+    parser.add_argument(
+        "--min-convergence",
+        type=_minimum_convergence,
+        default=0.7,
+        metavar="FLOAT",
+        help="lexical convergence threshold in [0, 1] (default: 0.7)",
+    )
+    parser.add_argument(
+        "--indent", type=int, default=2, help="JSON indent (default: 2; 0 is compact)"
+    )
+    args = parser.parse_args(_normalize_minimum_convergence_argument(argv))
+    try:
+        payload = _load(args.input)
+        receipt = make_post_run_receipt(payload, args.min_convergence)
+    except FileNotFoundError:
+        print(f"error: file not found: {args.input}", file=sys.stderr)
+        return 1
+    except json.JSONDecodeError as exc:
+        print(f"error: invalid JSON in {args.input}: {exc}", file=sys.stderr)
+        return 1
+    except OSError as exc:
+        print(f"error: could not read {args.input}: {exc}", file=sys.stderr)
+        return 1
+    except ValueError as exc:
+        print(f"error: {exc}", file=sys.stderr)
+        return 1
+    print(json.dumps(receipt, indent=args.indent if args.indent > 0 else None))
+    if not receipt["minimum_convergence"]["passed"]:
+        print(
+            "error: lexical convergence is below the receipt minimum; investigate required",
+            file=sys.stderr,
+        )
+        return THRESHOLD_NOT_MET_EXIT_CODE
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
+    normalized_argv = list(sys.argv[1:] if argv is None else argv)
+    if normalized_argv and normalized_argv[0] == "receipt":
+        return _receipt_main(normalized_argv[1:])
     parser = argparse.ArgumentParser(
         prog="agent-convergence-scorer",
         description=(
@@ -106,7 +156,7 @@ def main(argv: list[str] | None = None) -> int:
         help="JSON indent for output (default: 2; use 0 for compact)",
     )
     parser.add_argument("--version", action="version", version=f"%(prog)s {__version__}")
-    args = parser.parse_args(_normalize_minimum_convergence_argument(argv))
+    args = parser.parse_args(_normalize_minimum_convergence_argument(normalized_argv))
 
     try:
         data = _load(args.input)
