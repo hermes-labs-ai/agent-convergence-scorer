@@ -46,10 +46,19 @@ If you run the same prompt through N agents and want a number for "are they prod
 ## Install
 
 ```bash
-pip install agent-convergence-scorer
+python -m pip install agent-convergence-scorer
 ```
 
 Python 3.9+. Zero runtime dependencies (stdlib only).
+
+Confirm the install and see which version is active:
+
+```bash
+agent-convergence-scorer --version
+```
+
+This prints the installed console script's version (currently the latest
+release, `0.2.0`).
 
 ## Quick start
 

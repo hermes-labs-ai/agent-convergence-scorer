@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- README install section now uses `python -m pip install agent-convergence-scorer`
+  and documents `agent-convergence-scorer --version` as a one-line install
+  readback before the Quick start example.
+
 ## [0.2.0] — 2026-09-05
 
 ### Added
