@@ -35,6 +35,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Added a package metadata link to the project documentation.
 
+## [0.1.1] — 2026-05-31
+
+GitHub-only metadata release. Not published to PyPI — there is no
+`agent-convergence-scorer==0.1.1` package; the next PyPI release is `0.1.2`.
+
+### Added
+- `.zenodo.json` and `CITATION.cff` for citable, archivable releases with a DOI.
+
+### Changed
+- README identity cleanup for consistent Hermes Labs attribution.
+
 ## [0.1.0] — 2026-04-22
 
 Initial public release.
@@ -57,5 +68,6 @@ prompt framing affects ideation convergence across N concurrent agents.
 The scorer provided the method by which that experiment measured collapse.
 
 [0.1.0]: https://github.com/hermes-labs-ai/agent-convergence-scorer/releases/tag/v0.1.0
+[0.1.1]: https://github.com/hermes-labs-ai/agent-convergence-scorer/compare/v0.1.0...v0.1.1
 [0.1.2]: https://github.com/hermes-labs-ai/agent-convergence-scorer/compare/v0.1.1...v0.1.2
 [0.2.0]: https://github.com/hermes-labs-ai/agent-convergence-scorer/compare/v0.1.2...v0.2.0
