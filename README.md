@@ -112,6 +112,25 @@ read `minimum_convergence.passed` without parsing human text. Without
 values (including `NaN`, infinity, and values outside `[0, 1]`) are argparse
 usage errors with exit code `2`.
 
+### GitHub Action
+
+Use the repository action to score a checked-in JSON run set in a workflow. It
+installs this package from the action checkout, runs the same CLI, and exposes
+the reported lexical `convergence_score`, `exact_match_rate`, and runner-local
+`result_path` as outputs.
+
+```yaml
+- id: convergence
+  uses: hermes-labs-ai/agent-convergence-scorer@main
+  with:
+    input: examples/runs.json
+    min-convergence: "0.7"
+```
+
+A supplied `min-convergence` is inclusive. If the reported score is lower,
+the action still writes valid result JSON and exits `3`; it does not treat
+lexical convergence as correctness or approval of the underlying runs.
+
 Interpret:
 
 - `convergence_score = 0.703` — high but not perfect consistency.

@@ -61,3 +61,26 @@ jobs:
         with:
           name: dist
           path: dist/
+
+  action-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Run the action against its documented JSON input
+        id: convergence
+        uses: ./
+        with:
+          input: examples/runs.json
+          min-convergence: "0"
+
+      - name: Assert action outputs
+        shell: bash
+        env:
+          SCORE: ${{ steps.convergence.outputs.convergence_score }}
+          EXACT: ${{ steps.convergence.outputs.exact_match_rate }}
+          RESULT: ${{ steps.convergence.outputs.result_path }}
+        run: |
+          test "$SCORE" = "1.0"
+          test "$EXACT" = "1.0"
+          test -f "$RESULT"

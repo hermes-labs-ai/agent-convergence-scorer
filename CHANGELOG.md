@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- A composite GitHub Action that runs the documented convergence scorer on a
+  JSON run set and exposes the reported lexical scores.
+
 ### Changed
 - README install section now uses `python -m pip install agent-convergence-scorer`
   and documents `agent-convergence-scorer --version` as a one-line install

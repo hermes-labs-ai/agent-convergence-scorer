@@ -1,0 +1,73 @@
+name: Agent convergence scorer
+description: Score lexical convergence in a JSON run set and optionally fail below a stated minimum.
+author: Hermes Labs
+
+branding:
+  icon: bar-chart-2
+  color: purple
+
+inputs:
+  input:
+    description: Repository-relative JSON path shaped as a runs list or an object with a runs list.
+    required: true
+  min-convergence:
+    description: Optional inclusive lexical convergence threshold in [0, 1]. A failed threshold exits 3.
+    required: false
+
+outputs:
+  convergence_score:
+    description: The lexical composite convergence score reported by the CLI.
+    value: ${{ steps.score.outputs.convergence_score }}
+  exact_match_rate:
+    description: Fraction of runs exactly equal to the first run.
+    value: ${{ steps.score.outputs.exact_match_rate }}
+  result_path:
+    description: Runner-local path to the compact JSON result.
+    value: ${{ steps.score.outputs.result_path }}
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: "3.11"
+    - name: Install agent-convergence-scorer from this action
+      shell: bash
+      run: python -m pip install "$GITHUB_ACTION_PATH"
+    - name: Score run convergence
+      id: score
+      shell: bash
+      env:
+        ACS_INPUT: ${{ inputs.input }}
+        ACS_MIN_CONVERGENCE: ${{ inputs.min-convergence }}
+      run: |
+        result="$RUNNER_TEMP/agent-convergence-scorer.json"
+        args=("$ACS_INPUT" --indent 0)
+        if [[ -n "$ACS_MIN_CONVERGENCE" ]]; then
+          args+=(--min-convergence "$ACS_MIN_CONVERGENCE")
+        fi
+
+        set +e
+        agent-convergence-scorer "${args[@]}" > "$result"
+        score_exit=$?
+        set -e
+
+        if [[ ! -s "$result" ]]; then
+          exit "$score_exit"
+        fi
+
+        python - "$result" "$GITHUB_OUTPUT" <<'PY'
+        import json
+        import sys
+
+        result_path, output_path = sys.argv[1:]
+        with open(result_path, encoding="utf-8") as source:
+            result = json.load(source)
+        with open(output_path, "a", encoding="utf-8") as output:
+            output.write(f"convergence_score={result['convergence_score']}\n")
+            output.write(f"exact_match_rate={result['exact_match_rate']}\n")
+            output.write(f"result_path={result_path}\n")
+        PY
+
+        exit "$score_exit"
