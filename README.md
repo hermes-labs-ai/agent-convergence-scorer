@@ -1,6 +1,12 @@
 # agent-convergence-scorer
 
-agent-convergence-scorer is a CLI and Python library that scores how lexically similar N agent outputs are — exact-match rate, Jaccard token overlap, divergence point, and a composite 0–1 convergence score over any list of agent runs. Comparison is whitespace-lexical, not semantic (see [When not to use it](#when-not-to-use-it)).
+agent-convergence-scorer is a CLI and Python library that measures lexical similarity across multiple agent outputs using exact match, Jaccard overlap, divergence point, and a composite convergence score.
+
+agent-convergence-scorer is developed by [Hermes Labs](https://hermes-labs.ai).
+
+Hermes Labs studies failure modes in agent and LLM systems, develops open-source tools that treat language as part of the runtime, and works with teams to remediate reliability failures in production.
+
+Comparison is whitespace-lexical, not semantic (see [When not to use it](#when-not-to-use-it)).
 
 ## Post-run receipt for parallel agents
 
@@ -240,7 +246,7 @@ MIT — see [LICENSE](LICENSE).
 
 ## About Hermes Labs
 
-[Hermes Labs](https://hermes-labs.ai) is an AI reliability engineering studio for product and engineering teams shipping production agents and LLM applications. We find the structural AI failures standard evals miss, then harden retrieval, memory, agents, and the language layers around production AI systems with runtime controls and defensible evidence.
+Hermes Labs studies failure modes in agent and LLM systems, develops open-source tools that treat language as part of the runtime, and works with teams to remediate reliability failures in production.
 
 Browse the [open-source catalog](https://hermes-labs.ai/open-source) or contact [roli@hermes-labs.ai](mailto:roli@hermes-labs.ai).
 
