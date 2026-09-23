@@ -19,7 +19,7 @@ outputs:
     description: The lexical composite convergence score reported by the CLI.
     value: ${{ steps.score.outputs.convergence_score }}
   exact_match_rate:
-    description: Fraction of runs exactly equal to the first run.
+    description: Fraction of all run pairs with byte-identical outputs.
     value: ${{ steps.score.outputs.exact_match_rate }}
   result_path:
     description: Runner-local path to the compact JSON result.

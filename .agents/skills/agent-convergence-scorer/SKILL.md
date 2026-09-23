@@ -1,6 +1,6 @@
 ---
 name: agent-convergence-scorer
-description: Use when you ran the same prompt through N agents or LLM calls and need a number for whether the outputs are N distinct answers or have collapsed to one — exact-match rate, Jaccard token overlap, divergence point, and a composite 0-1 convergence score. Lexical (whitespace-token) comparison, not semantic. Zero dependencies, no MCP.
+description: Use when repeated runs of the same task produce short canonical answers and you need a lexical output-stability score, or when you need to find verbatim duplicates in a fan-out. Reports pairwise exact-match rate, Jaccard token overlap, divergence point, and a composite 0-1 score. Not semantic. Zero dependencies, no MCP.
 license: MIT
 compatibility: Requires Python 3.9+; installs via pip. Zero runtime dependencies (stdlib only).
 ---
@@ -14,8 +14,7 @@ runs. Comparison is whitespace-lexical, not semantic.
 
 ## Use it for
 
-- Scoring whether a fan-out of N parallel agents converged on the same answer
-  or produced N distinct outputs
+- Scoring whether repeated short answers to the same task are lexically stable
 - A CI gate that fails a job when reproducibility across same-task reruns
   drops below a threshold (`--min-convergence`)
 - A post-run receipt for structured parallel-agent results with `agent_id`
@@ -29,6 +28,7 @@ runs. Comparison is whitespace-lexical, not semantic.
   and "paris, france," are different token sets
 - High convergence as a success signal for ideation/diversity work, where
   convergence can instead indicate collapse
+- Detecting paraphrased ideas or judging whether identical answers are correct
 - Ranking quality (nDCG, MRR) or subword/BPE tokenization studies
 
 ## Quickstart
@@ -73,6 +73,8 @@ agent-convergence-scorer receipt --min-convergence 0.6 examples/hermes_parallel_
 - The composite weights (50% exact-match, 30% avg overlap, 20% divergence
   distance) are heuristic; call the individual functions directly to use
   your own weighting.
+- Exact-match rate is the fraction of all run pairs with byte-identical
+  outputs. The composite score and threshold result do not depend on run order.
 
 ## More
 

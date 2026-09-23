@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Exact-match rate now measures the fraction of matching run pairs. The
+  composite score and CLI threshold no longer change when the same outputs
+  arrive in a different order. This changes scores for partially matching
+  batches; recalibrate any existing thresholds when upgrading to 0.3.0.
+- Document the live eval-output handoff for the GitHub Action and recommend
+  short canonical answers for lexical stability checks.
+
 ### Added
 - A composite GitHub Action that runs the documented convergence scorer on a
   JSON run set and exposes the reported lexical scores.

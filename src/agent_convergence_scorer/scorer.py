@@ -8,6 +8,7 @@ externally.
 
 from __future__ import annotations
 
+from collections import Counter
 from typing import Any
 
 
@@ -22,16 +23,17 @@ def _require_non_empty_runs(runs: list[str]) -> None:
 
 
 def exact_match_rate(runs: list[str]) -> float:
-    """Fraction of runs identical to run[0]. Range [0, 1].
+    """Fraction of run pairs with byte-identical outputs. Range [0, 1].
 
     Raises ValueError for an empty run list. A single run has rate 1.0.
     """
     _require_non_empty_runs(runs)
     if len(runs) < 2:
         return 1.0
-    first = runs[0]
-    matches = sum(1 for r in runs if r == first)
-    return round(matches / len(runs), 3)
+    counts = Counter(runs)
+    matching_pairs = sum(count * (count - 1) // 2 for count in counts.values())
+    all_pairs = len(runs) * (len(runs) - 1) // 2
+    return round(matching_pairs / all_pairs, 3)
 
 
 def token_overlap(runs: list[str]) -> dict[str, float]:

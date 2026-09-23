@@ -33,12 +33,20 @@ def test_exact_match_all_same():
 
 def test_exact_match_partial():
     runs = ["the answer is 42", "the answer is 43", "the answer is 42"]
-    assert exact_match_rate(runs) == round(2 / 3, 3)
+    assert exact_match_rate(runs) == round(1 / 3, 3)
 
 
 def test_exact_match_all_different():
     runs = ["a", "b", "c"]
-    assert exact_match_rate(runs) == round(1 / 3, 3)
+    assert exact_match_rate(runs) == 0.0
+
+
+def test_composite_score_and_exact_match_do_not_depend_on_arrival_order():
+    original = score_runs(["A", "A", "B"])
+    reordered = score_runs(["B", "A", "A"])
+
+    assert original["exact_match_rate"] == reordered["exact_match_rate"] == 0.333
+    assert original["convergence_score"] == reordered["convergence_score"] == 0.266
 
 
 def test_exact_match_single_run():
@@ -86,7 +94,7 @@ def test_token_overlap_both_empty_token_sets_are_identical():
 
 def test_whitespace_only_byte_different_runs_keep_exact_match_distinct():
     result = score_runs([" ", "\t"])
-    assert result["exact_match_rate"] == 0.5
+    assert result["exact_match_rate"] == 0.0
     assert result["token_metrics"] == {"avg_overlap": 1.0, "jaccard": 1.0}
     assert result["divergence_point"]["diverges_at_token"] is None
 
@@ -155,7 +163,7 @@ def test_score_runs_divergent():
     runs = ["The answer is A", "The answer is B", "The answer is C"]
     result = score_runs(runs)
     assert result["num_runs"] == 3
-    assert result["exact_match_rate"] == round(1 / 3, 3)
+    assert result["exact_match_rate"] == 0.0
     assert result["convergence_score"] < 0.7
     assert result["divergence_point"]["num_tokens_to_divergence"] == 3
 

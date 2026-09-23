@@ -43,15 +43,18 @@ instead indicate collapse. The receipt is lexical-output evidence only: it does
 not establish semantic agreement, correctness, or permission to accept, merge,
 deploy, or skip tests/review.
 
-If you run the same prompt through N agents and want a number for "are they producing N distinct outputs or have they collapsed to one idea?" — this is that number.
+Use this when repeated runs of the same task return short, canonical answers and
+you need to spot output instability before it reaches users. It also exposes
+verbatim and lexical duplication in a fan-out. It cannot tell whether different
+wording expresses the same idea.
 
 ## Pain
 
-- You just ran a fan-out of N agents and eyeballing whether they converged is slow and subjective.
-- Your eval harness reports accuracy but not *reproducibility*; same prompt, two runs, two answers, no metric.
-- Multi-agent hackathon or swarm setup; half the agents picked the same target. You want evidence, not vibes.
-- LLM temperature study where "temp=0.3 vs temp=0.7" needs a downstream consistency number.
-- You caught agents rephrasing each other but there is no column in your CSV for it.
+- Your eval harness reports accuracy but not run-to-run stability for the same prompt.
+- A classifier or router sometimes changes its short answer across repeated calls.
+- A fan-out may be returning duplicate wording when you expected independent outputs.
+- A temperature or prompt change needs a consistent lexical comparison across runs.
+- You need to see whether short, canonical answers from repeated runs are stable.
 
 ## Install
 
@@ -73,8 +76,7 @@ Confirm the install and see which version is active:
 agent-convergence-scorer --version
 ```
 
-This prints the installed console script's version (currently the latest
-release, `0.2.0`).
+This prints the installed console script's version.
 
 ## Quick start
 
@@ -88,12 +90,12 @@ Output:
 ```json
 {
   "num_runs": 3,
-  "exact_match_rate": 0.667,
+  "exact_match_rate": 0.333,
   "token_metrics": {
     "avg_overlap": 0.733,
     "jaccard": 1.0
   },
-  "convergence_score": 0.703,
+  "convergence_score": 0.536,
   "divergence_point": {
     "diverges_at_token": "paris.",
     "token_position": 3,
@@ -130,27 +132,32 @@ usage errors with exit code `2`.
 
 ### GitHub Action
 
-Use the repository action to score a checked-in JSON run set in a workflow. It
+Use the repository action to score JSON from your eval job in a workflow. It
 installs this package from the action checkout, runs the same CLI, and exposes
 the reported lexical `convergence_score`, `exact_match_rate`, and runner-local
 `result_path` as outputs.
 
 ```yaml
+- name: Produce repeated outputs for one prompt
+  run: python scripts/run_eval.py > runs.json # replace with your eval command
 - id: convergence
-  uses: hermes-labs-ai/agent-convergence-scorer@main
+  uses: hermes-labs-ai/agent-convergence-scorer@v0.3.0
   with:
-    input: examples/runs.json
+    input: runs.json
     min-convergence: "0.7"
 ```
 
-A supplied `min-convergence` is inclusive. If the reported score is lower,
+A supplied `min-convergence` is inclusive. Calibrate it on repeated outputs
+from the same task and compare short canonical results, such as labels or
+normalized JSON fields. The action does not run your agents; it scores the
+`{"runs": ["...", "..."]}` file your eval job produces. If the score is lower,
 the action still writes valid result JSON and exits `3`; it does not treat
 lexical convergence as correctness or approval of the underlying runs.
 
 Interpret:
 
-- `convergence_score = 0.703` — high but not perfect consistency.
-- `exact_match_rate = 0.667` — 2 of 3 runs identical to run 0.
+- `convergence_score = 0.536` — partial lexical consistency, not a correctness score.
+- `exact_match_rate = 0.333` — 1 of the 3 run pairs is byte-identical.
 - Divergence at token 3 — they agreed on the prefix "The capital is" then split.
 
 ## Library usage
@@ -164,9 +171,9 @@ runs = [
     "The answer is C",
 ]
 print(score_runs(runs))
-# {'num_runs': 3, 'exact_match_rate': 0.333,
+# {'num_runs': 3, 'exact_match_rate': 0.0,
 #  'token_metrics': {'avg_overlap': 0.6, 'jaccard': 0.6},
-#  'convergence_score': 0.497,
+#  'convergence_score': 0.33,
 #  'divergence_point': {'diverges_at_token': 'a', 'token_position': 3, 'num_tokens_to_divergence': 3}}
 ```
 
@@ -176,22 +183,24 @@ Individual metrics are importable too: `exact_match_rate`, `token_overlap`, `div
 
 | Metric | Range | What it measures |
 |---|---|---|
-| `exact_match_rate` | `[0, 1]` | Fraction of runs byte-identical to `runs[0]`. Crude reproducibility floor. |
+| `exact_match_rate` | `[0, 1]` | Fraction of all run pairs with byte-identical outputs. Unaffected by run order. |
 | `token_metrics.jaccard` | `[0, 1]` | Token-set Jaccard of the first two runs (quick eyeball). |
 | `token_metrics.avg_overlap` | `[0, 1]` | Mean Jaccard over all `C(N,2)` pairs. Robust to N. |
 | `divergence_point.num_tokens_to_divergence` | `[0, min_len]` | First position where runs disagree. Late divergence = strong shared prefix. |
-| `convergence_score` | `[0, 1]` | Composite: `0.5 * exact_match + 0.3 * avg_overlap + 0.2 * div_distance_norm`. |
+| `convergence_score` | `[0, 1]` | Order-independent composite: `0.5 * exact_match + 0.3 * avg_overlap + 0.2 * div_distance_norm`. |
 
 ## When to use it
 
-- Quick single-number consistency check for multi-agent fan-outs.
-- CI gate: fail if N reruns of a prompt drop below a convergence threshold.
-- Measuring the effect of a temperature, prompt, or framing change on output stability.
-- Quantifying ideation collapse in multi-agent hackathons (N agents → how many distinct ideas?).
+- Quick lexical consistency check for repeated short answers to the same task.
+- CI gate: fail if N reruns of a prompt drop below a calibrated threshold.
+- Measuring the effect of a temperature, prompt, or framing change on lexical output stability.
+- Finding verbatim or lexically similar duplicates in a multi-agent fan-out.
 
 ## When not to use it
 
 - **Semantic similarity.** Tokenization is whitespace-only; "Paris, France" and "paris, france," are different token sets. If you need meaning-level comparison, pair these metrics with a sentence-embedding similarity (or a reranker) externally.
+- **Freeform ideation collapse or factual correctness.** Different prose can
+  express the same idea, and identical wrong answers can score `1.0`.
 - **Subword tokenization studies.** This is not a BPE/WordPiece tokenizer.
 - **Multilingual corpora where whitespace isn't the word boundary** (Chinese, Japanese, Thai, etc.) — tokenize upstream, pass the tokenized-then-joined form.
 - **Ranking quality** (nDCG, MRR, etc.) — use `ir-measures` or `ranx` instead.
@@ -208,19 +217,17 @@ overlap `1.0`; this applies even if their original bytes differ (for example,
 found before the shortest run ended; it does not prove the full runs are byte
 identical, so prefix cases retain `null` in either direction.
 
-## Example: measuring a hackathon collapse
+## Example: flagging unstable short answers
 
 ```python
 from agent_convergence_scorer import score_runs
 
-# 4 agents, same prompt, different (or identical) outputs
-runs = [agent.run(prompt) for agent in agents]
+# Collect one canonical answer from each repeat of the same task.
+runs = ["approve", "approve", "reject"]
 result = score_runs(runs)
 
-if result["convergence_score"] > 0.8:
-    print(f"⚠️ collapse: {result['convergence_score']:.2f} — agents are rephrasing each other")
-else:
-    print(f"✓ diverse: {result['convergence_score']:.2f}")
+print(result["exact_match_rate"])   # 0.333: one matching pair of three
+print(result["convergence_score"])  # 0.266: investigate this run set
 ```
 
 ## Origin

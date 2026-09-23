@@ -9,7 +9,7 @@ When instructions conflict, give priority to the current user request over this 
 
 Takes a list of N strings (each string = one agent run on the same prompt) and returns four numbers:
 
-- `exact_match_rate ∈ [0, 1]` — fraction identical to `runs[0]`
+- `exact_match_rate ∈ [0, 1]` — fraction of all run pairs with byte-identical outputs
 - `token_metrics.avg_overlap ∈ [0, 1]` — mean pairwise Jaccard over whitespace tokens
 - `divergence_point.num_tokens_to_divergence ∈ [0, min_len]` — first disagreement position
 - `convergence_score ∈ [0, 1]` — composite, weights `0.5 * exact_match + 0.3 * avg_overlap + 0.2 * div_distance_norm`
@@ -18,14 +18,15 @@ Zero runtime dependencies. Python 3.9+. CLI and library both supported.
 
 ## When to use
 
-- You ran N agents on the same prompt and want one number for how much they agreed.
-- You want a CI gate that fails when reruns of a prompt drop below a convergence threshold.
-- You are running a multi-agent hackathon or fan-out and want to measure ideation collapse.
-- You need a downstream metric for a temperature/prompt/framing A/B test.
+- You reran the same task and want to measure stability of short, canonical answers.
+- You want a CI gate that fails when reruns drop below a calibrated lexical threshold.
+- You want to find verbatim or lexically similar duplicates in a multi-agent fan-out.
+- You need a downstream lexical metric for a temperature/prompt/framing A/B test.
 
 ## When NOT to use
 
 - **Semantic similarity.** This is lexical only. Same meaning, different words → low score. Pair with an embedding model if you need semantics.
+- **Ideation collapse or correctness.** The scorer cannot detect paraphrased ideas or tell whether identical outputs are right.
 - **Subword / BPE / WordPiece comparisons.** Whitespace tokenization only.
 - **Non-whitespace-segmented languages.** Tokenize upstream and pass the tokenized-then-joined form.
 - **Ranking quality.** Use `ir-measures` or `ranx`.
@@ -43,10 +44,10 @@ Returns:
 ```python
 {
   "num_runs": 3,
-  "exact_match_rate": 0.333,
-  "token_metrics": {"avg_overlap": 0.42, "jaccard": 0.5},
-  "convergence_score": 0.413,
-  "divergence_point": {"diverges_at_token": "output", "token_position": 1, "num_tokens_to_divergence": 1}
+  "exact_match_rate": 0.0,
+  "token_metrics": {"avg_overlap": 0.5, "jaccard": 0.5},
+  "convergence_score": 0.217,
+  "divergence_point": {"diverges_at_token": "1", "token_position": 1, "num_tokens_to_divergence": 1}
 }
 ```
 

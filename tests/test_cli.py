@@ -109,30 +109,40 @@ def test_main_indent_zero_compact(tmp_path, capsys):
 
 def test_minimum_convergence_equality_passes_with_machine_readable_result(tmp_path, capsys):
     p = _write_json(tmp_path, ["same", "different"])
-    rc = main(["--min-convergence", "0.25", str(p)])
+    rc = main(["--min-convergence", "0", str(p)])
     assert rc == 0
     parsed = json.loads(capsys.readouterr().out)
-    assert parsed["convergence_score"] == 0.25
-    assert parsed["minimum_convergence"] == {"threshold": 0.25, "passed": True}
+    assert parsed["convergence_score"] == 0.0
+    assert parsed["minimum_convergence"] == {"threshold": 0.0, "passed": True}
 
 
 def test_minimum_convergence_failure_keeps_json_and_reports_human_error(tmp_path, capsys):
     p = _write_json(tmp_path, ["same", "different"])
-    rc = main(["--min-convergence", "0.251", str(p)])
+    rc = main(["--min-convergence", "0.001", str(p)])
     assert rc == THRESHOLD_NOT_MET_EXIT_CODE
     captured = capsys.readouterr()
     parsed = json.loads(captured.out)
-    assert parsed["minimum_convergence"] == {"threshold": 0.251, "passed": False}
-    assert "convergence score 0.25 is below minimum 0.251" in captured.err
+    assert parsed["minimum_convergence"] == {"threshold": 0.001, "passed": False}
+    assert "convergence score 0.0 is below minimum 0.001" in captured.err
 
 
 def test_minimum_convergence_stdin_failure_is_machine_readable(monkeypatch, capsys):
     monkeypatch.setattr("sys.stdin", io.StringIO(json.dumps(["same", "different"])))
-    rc = main(["--min-convergence", "0.251", "-"])
+    rc = main(["--min-convergence", "0.001", "-"])
     assert rc == THRESHOLD_NOT_MET_EXIT_CODE
     captured = capsys.readouterr()
     assert json.loads(captured.out)["minimum_convergence"]["passed"] is False
     assert "below minimum" in captured.err
+
+
+def test_minimum_convergence_has_same_decision_for_reordered_runs(tmp_path, capsys):
+    for runs in (["A", "A", "B"], ["B", "A", "A"]):
+        p = _write_json(tmp_path, runs)
+        rc = main(["--min-convergence", "0.3", str(p)])
+        result = json.loads(capsys.readouterr().out)
+        assert rc == THRESHOLD_NOT_MET_EXIT_CODE
+        assert result["convergence_score"] == 0.266
+        assert result["minimum_convergence"]["passed"] is False
 
 
 @pytest.mark.parametrize("value", ["-0.1", "1.1", "nan", "NaN", "inf", "-inf", "not-a-number"])
