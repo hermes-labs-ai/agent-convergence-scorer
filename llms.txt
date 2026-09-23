@@ -73,7 +73,7 @@ Extracted 2026-04-22 from a Hermes Labs internal experiment that looked at wheth
 
 ## About Hermes Labs
 
-Hermes Labs is an independent AI-reliability lab building open-source tools that catch silent failure modes in production AI. More at [hermes-labs.ai](https://hermes-labs.ai).
+Hermes Labs is an agentic infrastructure company building the reliability layer for autonomous systems. More at [hermes-labs.ai](https://hermes-labs.ai).
 
 Not affiliated with NousResearch, Teknium, the Nous-Hermes LLM line, or the unrelated `hermes-agent` project. Different companies, different work.
 

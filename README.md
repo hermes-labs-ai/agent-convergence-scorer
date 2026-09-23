@@ -1,6 +1,21 @@
-# agent-convergence-scorer
+<div align="center">
 
-agent-convergence-scorer is a CLI and Python library that scores how lexically similar N agent outputs are — exact-match rate, Jaccard token overlap, divergence point, and a composite 0–1 convergence score over any list of agent runs. Comparison is whitespace-lexical, not semantic (see [When not to use it](#when-not-to-use-it)).
+<h1>agent-convergence-scorer</h1>
+
+agent-convergence-scorer is a CLI and Python library that scores how lexically similar N agent outputs are — exact-match rate, Jaccard token overlap, divergence point, and a composite 0–1 convergence score over any list of agent runs.
+
+agent-convergence-scorer is developed by [Hermes Labs](https://hermes-labs.ai).
+
+Hermes Labs is an agentic infrastructure company building the reliability layer for autonomous systems.
+
+[![PyPI](https://img.shields.io/pypi/v/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
+[![Python](https://img.shields.io/pypi/pyversions/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![CI](https://github.com/hermes-labs-ai/agent-convergence-scorer/actions/workflows/ci.yml/badge.svg)](https://github.com/hermes-labs-ai/agent-convergence-scorer/actions/workflows/ci.yml)
+
+</div>
+
+Comparison is whitespace-lexical, not semantic (see [When not to use it](#when-not-to-use-it)).
 
 ## Post-run receipt for parallel agents
 
@@ -27,11 +42,6 @@ convergence as success for ideation or diversity work, where convergence can
 instead indicate collapse. The receipt is lexical-output evidence only: it does
 not establish semantic agreement, correctness, or permission to accept, merge,
 deploy, or skip tests/review.
-
-[![PyPI](https://img.shields.io/pypi/v/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
-[![Python](https://img.shields.io/pypi/pyversions/agent-convergence-scorer.svg)](https://pypi.org/project/agent-convergence-scorer/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![CI](https://github.com/hermes-labs-ai/agent-convergence-scorer/actions/workflows/ci.yml/badge.svg)](https://github.com/hermes-labs-ai/agent-convergence-scorer/actions/workflows/ci.yml)
 
 If you run the same prompt through N agents and want a number for "are they producing N distinct outputs or have they collapsed to one idea?" — this is that number.
 
@@ -240,7 +250,7 @@ MIT — see [LICENSE](LICENSE).
 
 ## About Hermes Labs
 
-[Hermes Labs](https://hermes-labs.ai) is an AI reliability engineering studio for product and engineering teams shipping production agents and LLM applications. We find the structural AI failures standard evals miss, then harden retrieval, memory, agents, and the language layers around production AI systems with runtime controls and defensible evidence.
+[Hermes Labs](https://hermes-labs.ai) is an agentic infrastructure company building the reliability layer for autonomous systems. We find the structural AI failures standard evals miss, then harden retrieval, memory, agents, and the language layers around production AI systems with runtime controls and defensible evidence.
 
 Browse the [open-source catalog](https://hermes-labs.ai/open-source) or contact [roli@hermes-labs.ai](mailto:roli@hermes-labs.ai).
 
