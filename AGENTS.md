@@ -2,6 +2,9 @@
 
 Instructions for AI agents contributing to or using this tool.
 
+Treat each user request as an independent task, and carry context from previous tasks only when the user explicitly asks.
+When instructions conflict, give priority to the current user request over this guide and to the contribution requirements below over illustrative examples.
+
 ## What this tool does
 
 Takes a list of N strings (each string = one agent run on the same prompt) and returns four numbers:
@@ -148,7 +151,7 @@ Extracted from a prototype built during the Hermes Labs Cascade Hackathon on 202
 
 ## About Hermes Labs
 
-[Hermes Labs](https://hermes-labs.ai) builds AI audit infrastructure for enterprise AI systems — EU AI Act, ISO 42001, agent-level risk. We open-source the tools we use internally. Everything is MIT, fully free, no SaaS tier. Audit work is paid; the code is not.
+[Hermes Labs](https://hermes-labs.ai) is an agentic infrastructure company building the reliability layer for autonomous systems.
 
 Companion OSS to consider pairing with this scorer:
 - **[lintlang](https://github.com/hermes-labs-ai/lintlang)** — static linter for agent configs
